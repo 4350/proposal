@@ -1,0 +1,120 @@
+%!TEX program = xelatex
+%!TEX output_directory = out
+%!TEX jobname = Thesis Proposal (22107 and 22584)
+
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{fontspec}
+\usepackage{microtype}
+\usepackage[a4paper,margin=3.5cm,top=3cm,bottom=3cm,footskip=1.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{quoting}
+\usepackage[small]{titlesec}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{titleps}
+\usepackage{csquotes}
+
+\usepackage[backend=biber,style=apa]{biblatex}
+\usepackage[american]{babel}
+\usepackage{csquotes}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{bibliography.bib}
+\defbibheading{bibliography}[\refname]{\section*{#1}}
+
+\linespread{1.30}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{\baselineskip}
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{-8pt plus 0pt minus 0pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{-6pt plus 2pt minus 2pt}
+\renewcommand\thesection{}
+\makeatletter
+\def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
+\let\sectionignore\@gobbletwo
+\let\latex@numberline\numberline
+\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
+\makeatother
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \vspace*{-8\topskip}      % remove the initial space
+  \begingroup \centering    % instead of \begin{center}
+  \let \footnote \thanks
+  \hrule height \z@        % to avoid the insertion of lineskip glue
+    \vskip 3.5em
+    {\Large
+      \begin{tabular}[t]{@{}l}
+        \textbf{\@title}
+      \end{tabular}
+      \par
+    }%
+    {
+      %\lineskip 0.5em
+      \@author
+      \par
+    }%
+    {
+      \@date
+      \par
+    }%
+  \par\endgroup            % instead of \end{center}
+}
+\makeatother
+
+% Don't call it an ... abstract
+\renewenvironment{abstract}{\small\quotation}{\endquotation}
+
+\newcommand{\nosection}[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \markright{#1}}
+
+% Note: You might not have this font in which case you might not be able
+%       to build the file. The font isn't free so I can't distribute it.
+\setmainfont{Minion Pro}
+
+\title{Thesis in Finance Proposal}
+\author{
+  \begin{tabular}[t]{@{}c@{}}
+    Gustaf Soldan\\
+    {\href{mailto:22107@student.hhs.se}{22107@student.hhs.se}}
+  \end{tabular}
+  \hskip 1em
+  \begin{tabular}[t]{@{}c@{}}
+    Victor Andrée\\
+    {\href{mailto:22584@student.hhs.se}{22584@student.hhs.se}}
+  \end{tabular}
+}
+\date{September 9, 2016}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\Textcite{FF2015}~find that the classic value factor HML might be redundant in explaining average returns when introducing profitability (RMW) and investment (CMA). This thesis aims to further investigate the death of value from a risk management perspective. We believe in using techniques such as GARCH and copulas to model these features. Data is available from Kenneth French's website.
+\end{abstract}
+
+\nosection{Proposal}
+Factor strategies have become popular not only because of their added alpha to holding the market, but because of the low correlation across factors, which provides diversification in a portfolio setting. \Textcite{AngChen2002}~show that although factor correlations are low in general, they surge in bad times, when diversification is needed the most. But, do all factors have the same contribution to such asymmetrical risk, or do some alternatives fare better in bad times? 
+
+\Textcite{FF2015}~find that the value factor, HML, is redundant in a four-factor model including profitability and investment, as it has no explanatory power on monthly returns in a US 1963--2010 sample. This could mean that the value factor is an inferior proxy. This paper will examine the risks of value compared to profitability and investment, when both alternatives are considered in a given portfolio context. Specifically, we seek to investigate if value is also redundant when things go south. Concrete research questions:
+\begin{itemize}
+  \item Are risk measures (including VaR, expected shortfall and maximum drawdown) different when classic value is replaced by modern value?
+  \item Can a copula model realistically describe empirical data on factor strategies, given the dependence not captured by Gaussian distributions?
+  \item Does modern value look more attractive than classic value, given the risk analysis?
+\end{itemize}
+The importance of factor strategies for investors adds both relevance to our thesis and risk to popular strategies themselves. We hypothesize that the asymmetric risks of the value factor in a portfolio is greater than for the profitability and investment factors. Our intuition for this is twofold: Value is supposedly a more ``crowded trade'', with many hedge funds and numerous ETFs chasing the same strategy, which constitutes a source of risk~\autocite{HongStein1999}. Time permitting, we would also like to approach these questions:
+\begin{itemize}
+  \item Have inflows into the classic value (and momentum) strategy made the diversifaction benefits smaller vis-a-vis other factors?
+  \item Could it be shown that tail dependency in factors has increased with growing AUM?
+\end{itemize}
+
+\section{Data and Method}
+Factor strategies are the object of study, for which daily returns data is available for the US since at least 1963 on all factors from Kenneth French's data library. Additional returns data on QMJ and BAB factors are available from AQR's website. In addition to theoretical factors, modeling tradable factors would also be interesting -- for which returns data would have to be collected.
+
+We evaluate how a number of risk measures change in portfolios where value is substituted for profitability and investment. Combining a GARCH model for conditional volatility with a copula model for modelling dependencies strikes us as an appropriate, interesting and doable method for producing measures of tail dependence, Value-at-Risk and expected shortfall of different factor strategies. While we find the theory behind copulas both intuitive and appealing, estimating the models is econometrically involved. We have found and started using several good packages in R for modeling and estimation.
+
+Copula models have only recently been applied to understand risk in factor strategies, beginning with~\textcite{CholleteNing2012}. Using copulas, they examine dynamic correlations between a four-factor model and aggregate US consumption, and find clear evidence for tail dependence across risk factors. \textcite{ChristoffersenLanglois2011}~look at the four factors alone and show that the tail dependence in the factors can be generated by a copula-GARCH model.
+\printbibliography
+\end{document}
